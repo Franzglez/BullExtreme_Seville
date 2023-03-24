@@ -42,7 +42,7 @@ class Player {
 	}
 
 	setCotrols() {
-		const { JUMP, SHOOT, LEFT, RIGHT } = this.game.keys;
+		const { JUMP,CHARGE, SHOOT, LEFT, RIGHT } = this.game.keys;
 
 		addEventListener('keydown', ({ code }) => {
 			switch (code) {
@@ -50,6 +50,12 @@ class Player {
 					if (this.y0 === this.pos.y) {
 						this.speed.y = -10;
 						this.pos.y -= 1;
+					}
+					break;
+				case CHARGE:
+					if (this.x0 === this.pos.x){
+						this.speed.x = 100;
+
 					}
 					break;
 				case RIGHT:
@@ -66,6 +72,8 @@ class Player {
 
 		addEventListener('keyup', ({ code }) => {
 			switch (code) {
+				case CHARGE: 
+					this.controls.charge.pressed= false;
 				case RIGHT:
 					this.controls.right.pressed = false;
 					break;

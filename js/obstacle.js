@@ -1,8 +1,8 @@
-class Obstacle {
-	constructor(game) {
-		this.width = game.player.width / 2;
-		this.height = game.player.height * 1.5;
+class Obstacle{
+    constructor(game,ancho,alto,imagen) {
 
+		this.width = game.player.width/ancho;
+		this.height = game.player.height*alto;
 		this.pos = {
 			x: game.width,
 			y: game.player.y0 + game.player.height - this.height,
@@ -11,7 +11,7 @@ class Obstacle {
 		this.game = game;
 
 		this.img = new Image();
-		this.img.src = 'assets/torero-2.png';
+		this.img.src = imagen;
 
 		this.img.currentFrame = 0;
 		this.img.frameCount = 3;
@@ -39,7 +39,7 @@ class Obstacle {
 		this.pos.x -= this.game.velocity;
 	}
 	animateSprite(frameCounter) {
-		if (frameCounter % 8 === 0) {
+		if (frameCounter % 6 === 0) {
 			this.img.currentFrame++;
 
 			if (this.img.currentFrame === this.img.frameCount) {

@@ -10,6 +10,7 @@ const Game = {
 		SHOOT: 'KeyF',
 		RIGHT: 'KeyD',
 		LEFT: 'KeyA',
+		CHARGE: 'KEYW'
 	},
 
 	init() {
@@ -31,8 +32,8 @@ const Game = {
 		this.background = new Background(this);
 
 		this.obstacles = [];
+		
 
-		this.flamencas = [];
 
 		this.score = 0;
 
@@ -42,7 +43,11 @@ const Game = {
 	start() {
 		this.frameCounter = 0;
 		this.progress = 1;
+
+		this.frameLastObstacle = 0
+
 		this.animationLoopId = setInterval(() => {
+			this.random = Math.random()*10;
 			this.clear();
 
 			this.frameCounter++;
@@ -51,10 +56,14 @@ const Game = {
 			if (this.velocity !== 0) {
 				this.progress++;
 			}
+		
 
-			if (this.progress % 60 === 0) this.generateObstacle();
+			// if (this.progress % 120 === 0 ) this.generateObstacle(1.5,'assets/torero-2.png');
+			// if (this.progress % 60 === 0 ) this.generateObstacle(1.5,'assets/torero-2.png');
+			if (this.progress % 60 === 0 && this.random > 3) this.generateObstacle();
 
-			if (this.progress % 80 === 0) this.generateFlamenca();
+			// if (this.progress % 60 === 0 );  this.generateFlamenca();
+
 
 			this.drawAll();
 			this.moveAll();
@@ -71,14 +80,13 @@ const Game = {
 
 	drawAll() {
 		this.background.draw();
-
 		this.obstacles.forEach((obstacle) => {
 			obstacle.draw(this.frameCounter);
 		});
 
-		this.flamencas.forEach((flamenca) => {
-			flamenca.draw(this.frameCounter);
-		});
+		// this.flamencas.forEach((flamenca) => {
+		// 	flamenca.draw(this.frameCounter);
+		// });
 
 		this.player.draw(this.frameCounter);
 	},
@@ -90,13 +98,14 @@ const Game = {
 			obstacle.move();
 		});
 
-		this.flamencas.forEach((flamenca) => {
-			flamenca.move();
-		});
+		// this.flamencas.forEach((flamenca) => {
+		// 	flamenca.move();
+		// });
 
 		this.player.move(this.frameCounter);
 	},
-
+	
+	
 	clearObstacles() {
 		this.obstacles = this.obstacles.filter(
 			(obstacle) => obstacle.pos.x + obstacle.width > 0
@@ -106,6 +115,7 @@ const Game = {
 	isCollision() {
 		return this.obstacles.some(
 			(obstacle) =>
+		
 				this.player.pos.x + this.player.width - 20 > obstacle.pos.x &&
 				this.player.pos.x < obstacle.pos.x + obstacle.width &&
 				this.player.pos.y + this.player.height - 20 > obstacle.pos.y &&
@@ -133,19 +143,23 @@ const Game = {
 	},
 
 	generateObstacle() {
-		this.obstacles.push(new Obstacle(this));
-
-	},
-	generateFlamenca() {
-		this.flamencas.push(new Flamenca(this))
+		if(Math.random() > .5) {
+			this.obstacles.push(new Obstacle(this,1,1.5,'assets/torero-2.png'))
+		} else {
+			this.obstacles.push(new Obstacle(this,2,1.0,'assets/flamencas.png'))
+		}
 	},
 
 	clear() {
 		this.ctx.clearRect(0, 0, this.width, this.height);
 	},
 
+
+	
+
 	gameOver() {
 		clearInterval(this.animationLoopId);
 		if (confirm('FIN DEL JUEGO. ¿VOLVER A EMPEAZAR?')) this.init();
 	},
 };
+ 
