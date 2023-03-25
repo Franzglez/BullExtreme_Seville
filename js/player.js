@@ -1,19 +1,20 @@
 class Player {
-	constructor(x, y, game) {
+	constructor(x, y,game) {
 		this.game = game;
 
 		this.img = new Image();
-		this.img.src = 'assets/run-toro2.png';
+		this.img.src = 'assets/jump-toro.png';
 
 		this.img.currentFrame = 0;
-		this.img.frameCount = 5;
+		this.img.frameCount =5;
+		
 
 		this.width = 212 * 1;
 		this.height = 150 * 1;
 
 		this.y0 = game.height * 0.6;
 
-		console.log(this.y0);
+		
 
 		this.x0 = game.width * 0.1;
 
@@ -38,26 +39,45 @@ class Player {
 			left: {
 				pressed: false,
 			},
+			jump: {
+				pressed: false,
+			},
 		};
+		
 	}
 
+	setSprite() {
+		if (this.pos.y < this.y0) {
+			this.img.src = 'assets/jump-toro.png';
+			this.img.frameCount = 4;
+		
+		} else {
+			this.img.src = 'assets/run-toro2.png';
+			this.img.frameCount = 5;
+		
+		}
+	}
 	setCotrols() {
-		const { JUMP,CHARGE, SHOOT, LEFT, RIGHT } = this.game.keys;
+		const { JUMP, CHARGE, SHOOT, LEFT, RIGHT } = this.game.keys;
 
 		addEventListener('keydown', ({ code }) => {
 			switch (code) {
 				case JUMP:
 					if (this.y0 === this.pos.y) {
-						this.speed.y = -10;
+						this.speed.y = -15;
 						this.pos.y -= 1;
-					}
-					break;
-				case CHARGE:
-					if (this.x0 === this.pos.x){
-						this.speed.x = 100;
+
 
 					}
+					this.controls.jump.pressed = true;
 					break;
+				case CHARGE:
+					this.controls.
+						// if (this.x0 === this.pos.x){
+						// 	this.speed.x = 100;
+
+						// }
+						break;
 				case RIGHT:
 					this.controls.right.pressed = true;
 					break;
@@ -72,8 +92,11 @@ class Player {
 
 		addEventListener('keyup', ({ code }) => {
 			switch (code) {
-				case CHARGE: 
-					this.controls.charge.pressed= false;
+				// case JUMP:
+				// this.controls.jump.pressed = false;
+				// this.img.src = 'assets/run-toro.png'
+				case CHARGE:
+					this.controls.charge.pressed = false;
 				case RIGHT:
 					this.controls.right.pressed = false;
 					break;

@@ -26,13 +26,12 @@ const Game = {
 	},
 
 	setup() {
-		console.log('Estableciendo valores iniciales para el juego');
-
+		
 		this.player = new Player(0, 0, this);
 		this.background = new Background(this);
 
 		this.obstacles = [];
-		
+	
 
 
 		this.score = 0;
@@ -89,6 +88,7 @@ const Game = {
 		// });
 
 		this.player.draw(this.frameCounter);
+		this.player.setSprite()
 	},
 
 	moveAll() {
@@ -155,7 +155,9 @@ const Game = {
 	},
 
 
-	
+	charge(){
+		
+	},
 
 	gameOver() {
 		clearInterval(this.animationLoopId);
