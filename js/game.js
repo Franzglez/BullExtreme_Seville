@@ -16,6 +16,7 @@ const Game = {
 	init() {
 		const canvas = document.querySelector('canvas');
 
+		canvas.style.display =  'block';
 		canvas.width = this.width;
 		canvas.height = this.height;
 
@@ -23,6 +24,11 @@ const Game = {
 
 		this.setup();
 		this.start();
+
+		this.bso = new Audio('assets/pasodoble.mp3');
+		this.bso.playbackRate += 0.02;
+
+
 	},
 
 	setup() {
@@ -47,6 +53,9 @@ const Game = {
 			this.random = Math.random()*10;
 			this.clear();
 
+			this.bso.play();
+			
+
 			this.frameCounter++;
 			this.score += 0.01;
 
@@ -56,7 +65,7 @@ const Game = {
 		
 
 			
-			if (this.progress % 60 === 0 && this.random > 3) this.generateObstacle();
+			if (this.progress % 60 === 0 && this.random > 6) this.generateObstacle();
 
 			
 
@@ -133,9 +142,9 @@ const Game = {
 		return this.obstacles.some(
 			(obstacle) =>
 		
-				this.player.pos.x + this.player.width - 50 > obstacle.pos.x &&
+				this.player.pos.x + this.player.width - 80 > obstacle.pos.x &&
 				this.player.pos.x < obstacle.pos.x + obstacle.width &&
-				this.player.pos.y + this.player.height - 50 > obstacle.pos.y &&
+				this.player.pos.y + this.player.height - 80 > obstacle.pos.y &&
 				this.player.pos.y < obstacle.pos.y + obstacle.height
 		);
 	},
@@ -148,7 +157,7 @@ const Game = {
 		if(Math.random() > .5) {
 			this.obstacles.push(new Obstacle(this,1,1.5,'assets/torero-2.png'))
 		} else {
-			this.obstacles.push(new Obstacle(this,2,1.0,'assets/flamencas.png'))
+			this.obstacles.push(new Obstacle(this,2,1.2,'assets/flamencas.png'))
 		}
 	},
 
@@ -157,6 +166,7 @@ const Game = {
 	},
 
 	gameOver() {
+		this.bso.pause()
 		clearInterval(this.animationLoopId);
 		if (confirm('FIN DEL JUEGO. ¿VOLVER A EMPEAZAR?')) this.init();
 	},

@@ -144,12 +144,11 @@ class Player {
 		if (frameCounter % 6 === 0) {
 			this.currentSprite.frameIndex++;
 
-
-			// Ha llegado al ultimo frame del sprite
+	
 			if (this.currentSprite.frameIndex >= this.currentSprite.frames) {
 
-				// Si esta saltando y va subiendo o si esta saltando y está a una distancia mayor de la altura del toro se queda en el ultimo frame planeando
-				if((this.actions.jump && this.speed.y < 0) || this.actions.jump && (this.y0 - this.pos.y) > this.height) {
+			
+			if((this.actions.jump && this.speed.y < 0) || this.actions.jump && (this.y0 - this.pos.y) > this.height) {
 	
 					this.currentSprite.frameIndex = 3
 					return 
@@ -160,8 +159,6 @@ class Player {
 				this.currentSprite.frameIndex = 5
 					return;
 				}
-
-
 
 				this.currentSprite.frameIndex = 0;
 			}
@@ -189,7 +186,7 @@ class Player {
 			this.speed.x = 50
 		} else if (this.actions.charge) {
 			this.speed.x = 0
-			this.game.velocity= 50
+			this.game.velocity= 25
 		}else if(this.actions.right && this.pos.x < 400) {
 			this.speed.x = 5
 		} else if(this.actions.jump && this.actions.right) {
