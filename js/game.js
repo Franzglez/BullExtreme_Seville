@@ -7,10 +7,10 @@ const Game = {
 	fps: 60,
 	keys: {
 		JUMP: 'Space',
-		SHOOT: 'KeyF',
+		CHARGE: 'KeyK',
 		RIGHT: 'KeyD',
 		LEFT: 'KeyA',
-		CHARGE: 'KEYW'
+		
 	},
 
 	init() {
@@ -31,8 +31,6 @@ const Game = {
 		this.background = new Background(this);
 
 		this.obstacles = [];
-	
-
 
 		this.score = 0;
 
@@ -57,21 +55,25 @@ const Game = {
 			}
 		
 
-			// if (this.progress % 120 === 0 ) this.generateObstacle(1.5,'assets/torero-2.png');
-			// if (this.progress % 60 === 0 ) this.generateObstacle(1.5,'assets/torero-2.png');
+			
 			if (this.progress % 60 === 0 && this.random > 3) this.generateObstacle();
 
-			// if (this.progress % 60 === 0 );  this.generateFlamenca();
-
+			
 
 			this.drawAll();
 			this.moveAll();
 
 			this.scoreBoard.update(this.score);
 
-			if (this.isCollision()) this.gameOver();
+		
 
-			if (this.isCollisionBullet()) console.log('Colisión bullet');
+			if (this.isCollisionCharge()) {
+				this.killObstacles();
+			}else if( this.isCollision()){
+				this.gameOver();
+			}
+
+			
 
 			this.clearObstacles();
 		}, 1000 / this.fps);
@@ -83,12 +85,10 @@ const Game = {
 			obstacle.draw(this.frameCounter);
 		});
 
-		// this.flamencas.forEach((flamenca) => {
-		// 	flamenca.draw(this.frameCounter);
-		// });
+		
 
 		this.player.draw(this.frameCounter);
-		this.player.setSprite()
+	
 	},
 
 	moveAll() {
@@ -98,9 +98,7 @@ const Game = {
 			obstacle.move();
 		});
 
-		// this.flamencas.forEach((flamenca) => {
-		// 	flamenca.move();
-		// });
+
 
 		this.player.move(this.frameCounter);
 	},
@@ -112,35 +110,39 @@ const Game = {
 		);
 	},
 
+	killObstacles(){
+		
+
+			setTimeout(() => {this.obstacles = this.obstacles.filter(
+				(obstacle) => obstacle.pos.x > this.player.pos.x + this.player.width)
+				
+			}, 300);
+	},
+	
+	isCollisionCharge(){
+		return this.obstacles.some(
+			(obstacle) => 
+				obstacle.img.src.includes('torero') && this.player.actions.charge && 
+				this.player.pos.x + this.player.width - 50 > obstacle.pos.x &&
+				this.player.pos.x < obstacle.pos.x + obstacle.width 		 	
+		)
+
+},
+
 	isCollision() {
 		return this.obstacles.some(
 			(obstacle) =>
 		
-				this.player.pos.x + this.player.width - 20 > obstacle.pos.x &&
+				this.player.pos.x + this.player.width - 50 > obstacle.pos.x &&
 				this.player.pos.x < obstacle.pos.x + obstacle.width &&
-				this.player.pos.y + this.player.height - 20 > obstacle.pos.y &&
+				this.player.pos.y + this.player.height - 50 > obstacle.pos.y &&
 				this.player.pos.y < obstacle.pos.y + obstacle.height
 		);
 	},
 
-	isCollisionBullet() {
-		return this.player.bullets.some((bullet) => {
-			return this.obstacles.some((obstacle) => {
-				const isCollision =
-					bullet.pos.x + bullet.radius > obstacle.pos.x &&
-					bullet.pos.x - bullet.radius < obstacle.pos.x + obstacle.width &&
-					bullet.pos.y + bullet.radius > obstacle.pos.y &&
-					bullet.pos.y - bullet.radius < obstacle.pos.y + obstacle.height;
+	
 
-				if (isCollision) {
-					this.obstacles = this.obstacles.filter((o) => o !== obstacle);
-					this.player.bullets = this.player.bullets.filter((b) => b !== bullet);
-				}
-
-				return isCollision;
-			});
-		});
-	},
+	
 
 	generateObstacle() {
 		if(Math.random() > .5) {
@@ -152,11 +154,6 @@ const Game = {
 
 	clear() {
 		this.ctx.clearRect(0, 0, this.width, this.height);
-	},
-
-
-	charge(){
-		
 	},
 
 	gameOver() {
