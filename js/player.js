@@ -23,7 +23,12 @@ class Player {
 				img: createImage('assets/cornada.png'),
 				frames: 6,
 				frameIndex: 0,
-			}
+			},
+			muscles: {
+				img: createImage('assets/torowin.png'),
+				frames: 4,
+				frameIndex: 0,
+			} 
 		};
 
 		this.currentSprite = this.sprites.runRight
@@ -34,7 +39,8 @@ class Player {
 			right: false,
 			left: false,
 			jump: false,
-			charge: false
+			charge: false,
+			showMuscles: false
 		}
 
 
@@ -80,7 +86,7 @@ class Player {
 					this.actions.left = true;
 					break;
 				case CHARGE:
-					if (!this.actions.charge) {
+					if (!this.actions.charge && !this.actions.jump) {
 						this.sprites.charge.frameIndex = 0
 						this.actions.charge = true;
 						setTimeout(() => {
@@ -112,11 +118,16 @@ class Player {
 
 		if(this.actions.jump) {
 			this.currentSprite = this.sprites.jump
+		} else if (this.actions.showMuscles) {
+			this.currentSprite = this.sprites.muscles
 		} else if (this.actions.charge) {
 			this.currentSprite = this.sprites.charge
 		} else if (this.actions.right){
 			this.currentSprite = this.sprites.runRight
-		} else this.currentSprite = this.sprites.calm
+		} else {
+			
+			this.currentSprite = this.sprites.calm
+		}
 
 
 		this.animateSprite(frameCounter);
@@ -147,7 +158,11 @@ class Player {
 	
 			if (this.currentSprite.frameIndex >= this.currentSprite.frames) {
 
-			
+			if(this.actions.showMuscles) {
+
+				this.game.win()
+				return
+			}
 			if((this.actions.jump && this.speed.y < 0) || this.actions.jump && (this.y0 - this.pos.y) > this.height) {
 	
 					this.currentSprite.frameIndex = 3
@@ -165,7 +180,9 @@ class Player {
 		}
 	}
 
-
+	showMuscles() {
+		this.actions.showMuscles = true
+	}
 	move() {
 		const gravity = 0.4;
 				
@@ -195,9 +212,10 @@ class Player {
 		}else if(this.actions.right) {
 			this.speed.x = 0
 			this.game.velocity = 5
+
 		} else if (this.actions.left && this.pos.x > this.x0) {
 			this.speed.x = -5
-			this.velocity = 0			
+			this.game.velocity = 0			
 		} else {
 			this.speed.x = 0
 			this.game.velocity = 0
